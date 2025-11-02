@@ -31,7 +31,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           IMAGE=${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/${{ secrets.GAR_REPO }}/iris-api:${{ github.sha }}
-          docker build -t $IMAGE ./iris-api
+          docker build -t $IMAGE .
           docker push $IMAGE
 
 
