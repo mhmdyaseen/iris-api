@@ -31,8 +31,9 @@ jobs:
       - name: Build and push Docker image
         run: |
           IMAGE=${{ secrets.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT }}/${{ secrets.GAR_REPO }}/iris-api:${{ github.sha }}
-          docker build -t $IMAGE .
+          docker build -t $IMAGE ./iris-api
           docker push $IMAGE
+
 
       - name: Get GKE credentials
         uses: google-github-actions/get-gke-credentials@v2
