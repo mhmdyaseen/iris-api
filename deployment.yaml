@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: iris-api
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: iris-api
@@ -12,20 +12,37 @@ spec:
       labels:
         app: iris-api
     spec:
+      serviceAccountName: telemetry-access   # optional: required if exporting traces to cloud
       containers:
         - name: iris-api
-          image: us-central1-docker.pkg.dev/iris-deploy-477015/iris-api-repo/iris-api:latest
+          # Replace this with the image you push that contains the integrated app + model
+          image: us-central1-docker.pkg.dev/super50-19f07/cloud-run-source-deploy/iris
           ports:
-            - containerPort: 8100
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: iris-api-service
-spec:
-  type: LoadBalancer
-  selector:
-    app: iris-api
-  ports:
-    - port: 80
-      targetPort: 8080
+            - containerPort: 8200
+          readinessProbe:
+            httpGet:
+              path: /ready_check
+              port: 8200
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+            successThreshold: 1
+            timeoutSeconds: 2
+          livenessProbe:
+            httpGet:
+              path: /live_check
+              port: 8200
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            failureThreshold: 3
+            timeoutSeconds: 2
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+          env:
+            - name: MODEL_PATH
+              value: "model-v1.joblib"   # optional, read in app if you prefer env config
