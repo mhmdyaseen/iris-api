@@ -1,8 +1,12 @@
 README:
 
-* **.github/workflows/** – Contains the GitHub Actions workflow that automates building, pushing, and deploying the app to Kubernetes.
-* **Dockerfile** – Defines the steps to build the Docker image for the Iris API application.
-* **deployment.yaml** – Kubernetes configuration file that describes how the Iris API is deployed and managed in the cluster.
-* **main.py** – Python script that runs the Iris API and serves predictions.
-* **model-v1.joblib** – saved machine learning model used by the API to make predictions.
-* **requirements.txt** – Lists all the Python packages required for the project.
+deploy-model.py – Automates building the Docker image, pushing it to Artifact Registry, and deploying it to Kubernetes.
+deployment.yaml – Defines the Kubernetes Deployment for the Iris API, including replicas, container image, and probes
+Dockerfile – Contains instructions to build the Docker image for the FastAPI application and model.
+hpa.yaml – Configures the Horizontal Pod Autoscaler to scale pods based on CPU utilization.
+main.py – The main FastAPI application that loads the Iris model, handles predictions, and provides health endpoints.
+model-server.py – Optional server script to start the FastAPI app or manage model-serving logic
+model-v1.joblib – The pre-trained Iris classification model file.
+post.lua – Load testing script used with wrk to simulate multiple concurrent POST requests to the API.
+requirements.txt – Lists all Python dependencies required to run the application.
+service.yaml – Defines the Kubernetes Service to expose the API through a LoadBalancer.
